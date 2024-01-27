@@ -9,10 +9,6 @@ export default function App() {
       <StackNavigator />
       <StatusBar style="auto" />
     </>
-    // <View style={styles.container}>
-    //   <HomeScreen />
-    //   <StatusBar style="auto"></StatusBar>
-    // </View>
   );
 }
 
