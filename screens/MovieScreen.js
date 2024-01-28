@@ -13,6 +13,7 @@ export default function MovieScreen() {
 
   const [selectedDate, setSelectedDate] = useState("");
   const [mall, setMall] = useState([]);
+  const [seatsData, setSeatsData] = useState([]);
   // const [showTimes,setShowTimes]=useState()
   console.log(mall);
   return (
@@ -85,6 +86,7 @@ export default function MovieScreen() {
         <Pressable
           onPress={() => {
             setMall(item.name);
+            setSeatsData(item.tableData);
           }}
           style={{ margin: 10 }}
           key={index}
@@ -104,6 +106,14 @@ export default function MovieScreen() {
                     margin: 15,
                     padding: 10,
                   }}
+                  onPress={() =>
+                    navigation.navigate("Theatre", {
+                      mall: mall,
+                      name: route.params.name,
+                      timeSelected: item,
+                      tableSeats: seatsData,
+                    })
+                  }
                 >
                   <Text
                     style={{
