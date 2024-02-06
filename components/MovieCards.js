@@ -6,19 +6,29 @@ import {
   Text,
   View,
 } from "react-native";
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import movies from "../data/movies";
 import Header from "./Header";
 import { useNavigation } from "@react-navigation/native";
+import { MoviesCards } from "../Context";
+import TicketComponent from "./TicketComponent";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 export default function MovieCards() {
   const data = movies;
   const navigation = useNavigation();
+  const { ticket } = useContext(MoviesCards);
+  useEffect(() => {
+    console.log("heeyyyyyyyyyyyyyy");
+    console.log("info", { ticket });
+  }, []);
   return (
+    // <SafeAreaView>
     <View style={{ alignItems: "center", justifyContent: "center" }}>
       <FlatList
         numColumns={2}
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={Header}
+        ListHeaderComponent={ticket.length > 0 ? TicketComponent : Header}
         data={data}
         renderItem={({ item }) => (
           <Pressable style={{ margin: 10, marginHorizontal: 23 }}>
@@ -47,7 +57,12 @@ export default function MovieCards() {
               {item.genre}
             </Text>
             <Pressable
-              onPress={() => navigation.navigate("Movies", { name: item.name })}
+              onPress={() =>
+                navigation.navigate("Movies", {
+                  name: item.name,
+                  image: item.image,
+                })
+              }
               style={{
                 backgroundColor: "#FFC40C",
                 padding: 10,
@@ -58,7 +73,11 @@ export default function MovieCards() {
               }}
             >
               <Text
-                style={{ fontSize: 14, fontWeight: "500", textAlign: "center" }}
+                style={{
+                  fontSize: 14,
+                  fontWeight: "500",
+                  textAlign: "center",
+                }}
               >
                 Book
               </Text>
@@ -67,6 +86,7 @@ export default function MovieCards() {
         )}
       />
     </View>
+    // </SafeAreaView>
   );
 }
 

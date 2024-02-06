@@ -10,15 +10,15 @@ import React, { useContext } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, AntDesign, FontAwesome } from "@expo/vector-icons";
-import { MovieCards } from "../Context";
+import { MoviesCards } from "../Context";
 import { useStripe } from "@stripe/stripe-react-native";
 
 export default function TheatreScreen() {
   const route = useRoute();
   const navigation = useNavigation();
   console.log(route.params);
-  const { seats, setSeats } = useContext(MovieCards);
-
+  const { seats, setSeats, occupied, setOccupied } = useContext(MoviesCards);
+  console.log("image", route.params.image);
   const onSeatSelect = (item) => {
     const seatSelected = seats.find((seat) => seat === item);
     if (seatSelected) {
@@ -34,7 +34,7 @@ export default function TheatreScreen() {
   console.log(total);
   console.log(fee);
   console.log(noOfSeats);
-
+  const displaySeats = [...seats];
   const stripe = useStripe();
   if (!stripe) {
     console.error("Stripe is not initialized");
@@ -78,10 +78,22 @@ export default function TheatreScreen() {
 
     if (presentSheet.error) return Alert.alert(presentSheet.error.message);
     else {
-      navigation.navigate("Ticket");
+      occupied.push(...seats);
+      navigation.navigate("Ticket", {
+        name: route.params.name,
+        mall: route.params.mall,
+        timeSelected: route.params.timeSelected,
+        total: total,
+        image: route.params.image,
+        date: route.params.date,
+        seatsSelected: displaySeats,
+        priceValue: priceValue,
+      });
     }
   };
-
+  const priceValue = noOfSeats * 240;
+  console.log(route.params.image);
+  console.log("occupied", occupied);
   const showSeats = () => {
     return (
       <View
@@ -189,8 +201,25 @@ export default function TheatreScreen() {
               >
                 {item}
               </Text>
+            ) : occupied.includes(item) ? (
+              <Text
+                style={{
+                  backgroundColor: "#989898",
+                  padding: 12,
+                  borderRadius: 6,
+                }}
+              >
+                {item}
+              </Text>
             ) : (
-              <Text style={{ padding: 12 }}>{item}</Text>
+              <Text
+                style={{
+                  padding: 12,
+                  borderRadius: 6,
+                }}
+              >
+                {item}
+              </Text>
             )}
           </Pressable>
         )}

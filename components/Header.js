@@ -97,6 +97,7 @@ export default function Header() {
           </Text>
         </Pressable>
       </ImageBackground>
+      <View style={{ marginTop: 10 }}></View>
       <View style={{ marginTop: 110, marginLeft: 23 }}>
         <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
           {types.map((item, index) => (

@@ -16,6 +16,7 @@ export default function MovieScreen() {
   const [seatsData, setSeatsData] = useState([]);
   // const [showTimes,setShowTimes]=useState()
   console.log(mall);
+  console.log("img", route.params.image);
   return (
     <SafeAreaView>
       <View
@@ -112,6 +113,8 @@ export default function MovieScreen() {
                       name: route.params.name,
                       timeSelected: item,
                       tableSeats: seatsData,
+                      data: selectedDate,
+                      image: route.params.image,
                     })
                   }
                 >
