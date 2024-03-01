@@ -32,6 +32,7 @@ export default function LoginScreen() {
         },
         body: JSON.stringify(data),
       });
+      console.log(data);
 
       const responseData = await response.json();
 

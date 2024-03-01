@@ -16,7 +16,7 @@ export default function MovieScreen() {
   const [seatsData, setSeatsData] = useState([]);
   // const [showTimes,setShowTimes]=useState()
   console.log(mall);
-  console.log("img", route.params.image);
+  console.log("movie screen", route.params);
   return (
     <SafeAreaView>
       <View

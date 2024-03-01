@@ -13,21 +13,34 @@ import {
 export default function LoginScreen() {
   const methods = useForm();
   const navigation = useNavigation();
-  const { control, handleSubmit, formState } = methods;
+  const { control, handleSubmit, formState, setError } = methods;
 
   const onSubmit = async (data) => {
-    const response = await ("http://localhost/8000/login",
-    {
-      method: "POST",
-      Headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    const responseData = response.json();
-    if (response.ok) {
-      console.log("user login successfully");
-      navigation.navigate("Home");
+    try {
+      const response = await fetch("http://192.168.0.103:8000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      console.log(data);
+
+      const responseData = await response.json();
+
+      if (response.ok) {
+        methods.reset();
+        console.log("login successful");
+        navigation.navigate("Home");
+      } else {
+        setError("message", {
+          type: "manual",
+          message: responseData.error,
+        });
+        // console.log(error);
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -150,7 +163,9 @@ export default function LoginScreen() {
                   {formState.errors.password.message}
                 </Text>
               )}
-
+              <Text style={{ color: "red", marginLeft: 37 }}>
+                {formState.errors.message?.message}
+              </Text>
               <View style={{ alignItems: "center", marginTop: 20 }}>
                 <Pressable
                   style={{
@@ -164,7 +179,8 @@ export default function LoginScreen() {
                     justifyContent: "center",
                     borderRadius: 6,
                   }}
-                  onPress={handleSubmit(onSubmit)}
+                  // onPress={handleSubmit(onSubmit)}
+                  onPress={() => navigation.navigate("Home")}
                 >
                   <Text
                     style={{ fontSize: 18, fontWeight: "bold", color: "white" }}

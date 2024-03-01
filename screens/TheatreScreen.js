@@ -14,17 +14,18 @@ import { MoviesCards } from "../Context";
 import { useStripe } from "@stripe/stripe-react-native";
 
 export default function TheatreScreen() {
+  const { ticket, setTicket } = useContext(MoviesCards);
   const route = useRoute();
   const navigation = useNavigation();
-  console.log(route.params);
+  console.log("theatre page", route.params);
   const { seats, setSeats, occupied, setOccupied } = useContext(MoviesCards);
   console.log("image", route.params.image);
   const onSeatSelect = (item) => {
     const seatSelected = seats.find((seat) => seat === item);
     if (seatSelected) {
-      setSeats(seats.filter((seat) => seat != item));
+      setSeats((prev) => prev.filter((seat) => seat != item));
     } else {
-      setSeats([...seats, item]);
+      setSeats((prev) => [...prev, item]);
       // setSeats(seats.push(item)); ]1fdxfg
     }
   };
@@ -42,6 +43,7 @@ export default function TheatreScreen() {
     return;
   }
   const subscribe = async () => {
+    console.log("SUBSCRIBE");
     console.log("reach");
     const response = await fetch("http://192.168.0.103:8000/payment", {
       method: "POST",
@@ -75,11 +77,13 @@ export default function TheatreScreen() {
     const presentSheet = await stripe.presentPaymentSheet({
       clientSecret,
     });
+    console.log("Present_Sheet", presentSheet);
 
     if (presentSheet.error) return Alert.alert(presentSheet.error.message);
-    else {
-      occupied.push(...seats);
-      navigation.navigate("Ticket", {
+    else if (presentSheet) {
+      setOccupied((prev) => [...prev, ...seats]);
+      // occupied.push(...seats);
+      const ticketData = {
         name: route.params.name,
         mall: route.params.mall,
         timeSelected: route.params.timeSelected,
@@ -88,12 +92,17 @@ export default function TheatreScreen() {
         date: route.params.date,
         seatsSelected: displaySeats,
         priceValue: priceValue,
-      });
+      };
+      console.log("TICKET_DATA", ticketData, "ROUTE_PARAMS: ", route.params);
+      setSeats([]);
+      navigation.navigate("Ticket", ticketData);
     }
   };
   const priceValue = noOfSeats * 240;
   console.log(route.params.image);
   console.log("occupied", occupied);
+  console.log("amout::::", priceValue);
+  console.log("seat:::", seats);
   const showSeats = () => {
     return (
       <View

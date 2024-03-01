@@ -1,11 +1,17 @@
-import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import {
+  ImageBackground,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import React, { useContext } from "react";
 import { MoviesCards } from "../Context";
+import { useNavigation } from "@react-navigation/native";
 
 export default function TicketComponent() {
   const { ticket } = useContext(MoviesCards);
-  console.log({ ticket });
-  console.log("ticket", ticket);
+  const navigation = useNavigation();
   return (
     <View>
       {ticket.slice(0, 1).map((item, index) => (
@@ -26,6 +32,7 @@ export default function TicketComponent() {
               left: 32,
               width: "82%",
             }}
+            onPress={navigation.navigate("Ticket")}
           >
             <Text style={{ fontSize: 14, fontWeight: "500", color: "gray" }}>
               YOUR TICKET
@@ -55,11 +62,12 @@ export default function TicketComponent() {
               </View>
               <Pressable
                 style={{
-                  backgroundColor: "#FFC40C",
+                  backgroundColor: "green",
                   padding: 10,
                   borderRadius: 6,
                   marginRight: 10,
                 }}
+                onPress={() => navigation.navigate("Ticket")}
               >
                 <Text
                   style={{

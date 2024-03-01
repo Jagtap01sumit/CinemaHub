@@ -57,19 +57,30 @@ app.post("/register", async (req, res) => {
     res.status(500).json({ err: "error" });
   }
 });
+
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log(req.body);
+    const user = await User.findOne({ email: email });
+    console.log(user.email, user.password);
+    if (user) {
+      const passwordMatch = await bcrypt.compare(password, user.password);
 
-    const info = await User.findAll({
-      email: email,
-      password: password,
-    });
-    console.log(info);
+      if (passwordMatch) {
+        res.status(200).json({ message: "User verified" });
+      } else {
+        res.status(401).json({ error: "Invalid credentials" });
+      }
+    } else {
+      res.status(401).json({ error: "Invalid credentials" });
+    }
   } catch (err) {
-    res.status(500).json({ err: "error" });
+    console.error(err);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
